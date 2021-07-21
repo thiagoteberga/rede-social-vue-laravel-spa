@@ -1,31 +1,39 @@
 <template>
-  <div class="row">
-    <div class="col s12 m6">
-      <div class="card blue-grey darken-1">
-        <div class="card-content white-text">
-          <span class="card-title">Card Title</span>
-          <p>I am a very simple card. I am good at containing small bits of information.
-          I am convenient because I require little markup to use effectively.</p>
-        </div>
-        <div class="card-action">
-          <a href="#">This is a link</a>
-          <a href="#">This is a link</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <site-template>
+    <publicar-conteudo-vue/>
+    <card-conteudo-vue 
+      perfil="https://materializecss.com/images/yuna.jpg"
+      nome="Marina Teberga"
+      data="20/07/2021 22:56">
+
+        <card-detalhe-vue 
+          img="https://materializecss.com/images/sample-1.jpg"
+          txt="Não obstante, a constante divulgação das informações nos obriga à análise dos métodos utilizados na avaliação de resultados."
+          titulo="Titulo do Card">
+        </card-detalhe-vue>
+    </card-conteudo-vue>
+  </site-template>
 </template>
 
 <script>
+import CardConteudoVue from '@/components/social/CardConteudoVue'
+import CardDetalheVue from '@/components/social/CardDetalheVue'
+import PublicarConteudoVue from '@/components/social/PublicarConteudoVue'
+import SiteTemplate from '@/templates/SiteTemplate'
 export default {
   name: 'Home',
+  components: {
+    CardConteudoVue,
+    CardDetalheVue,
+    PublicarConteudoVue,
+    SiteTemplate
+  },
   data () {
     return {
     }
   }
 }
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>

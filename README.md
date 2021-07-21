@@ -1,4 +1,4 @@
-# belvedere-spa
+# Learning VueJS
 
 > Learning how to work with VueJS and Laravel
 
