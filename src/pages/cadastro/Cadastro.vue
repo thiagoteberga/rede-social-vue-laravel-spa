@@ -7,18 +7,6 @@
 
       <span slot="principal">
         
-        <span v-if="!cadastro">
-
-          <h2>Login</h2>
-          
-          <input type="text" placeholder="Email" value="">
-          <input type="password" placeholder="*******" value="">
-          <button type="button" class="btn">Entrar</button>
-          <button type="button" class="btn blue" v-on:click="cadastro = !cadastro">Criar Conta</button>
-        </span>
-
-        <span v-if="cadastro">
-
           <h2>Cadastro</h2>
           
           <input type="text" placeholder="Nome" value="">
@@ -27,7 +15,6 @@
           <input type="password" placeholder="Confirme a Senha" value="">
           <button type="button" class="btn">Cadastrar</button>
           <button type="button" class="btn blue" v-on:click="cadastro = !cadastro">Já tenho conta</button>
-        </span>
 
       </span>
     </login-template>
@@ -43,7 +30,6 @@ export default {
   },
   data () {
     return {
-      cadastro: false
     }
   }
 }

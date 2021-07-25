@@ -1,7 +1,12 @@
 <template>
   <span>
     <header>
-      <nav-bar-vue color="amber darken-1" url="http:\\google.com.br" logo="Maroto"/>
+      <nav-bar-vue color="amber darken-1" url="/" logo="Maroto">
+          <li><router-link to="/">Home</router-link></li>
+          <li><router-link to="/login">Entrar</router-link></li>
+          <li><router-link to="/cadastro">Cadastrar</router-link></li>
+          <li><router-link to="/login">Sair</router-link></li>
+      </nav-bar-vue>
     </header>
 
     <main>
@@ -11,17 +16,7 @@
           <grid-vue size="4">
 
             <card-menu-vue>
-              <div class="row valign-wrapper">
-                <grid-vue size="4">
-                  <img src="https://materializecss.com/images/yuna.jpg" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
-                </grid-vue>
-                <grid-vue size="8">
-                  <span class="black-text">
-                    <h5>Marina Silva</h5>
-                    This is a square image. Add the "circle" class to it to make it appear circular.
-                  </span>
-                </grid-vue>
-              </div>
+              <slot name="menuesquerdo" />
             </card-menu-vue>
             <card-menu-vue>
               <h3>Thiago</h3>
@@ -29,7 +24,7 @@
 
           </grid-vue>
           <grid-vue size="8">
-            <slot/>
+            <slot name="principal" />
           </grid-vue>
         </div>
 

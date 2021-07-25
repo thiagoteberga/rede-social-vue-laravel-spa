@@ -1,22 +1,27 @@
 <template>
   <span>
     <header>
-      <nav-bar-vue color="amber darken-1" url="http:\\google.com.br" logo="Maroto"/>
+      <nav-bar-vue color="amber darken-1" url="http:\\google.com.br" logo="Maroto">
+          <li><router-link to="/">Home</router-link></li>
+          <li><router-link to="/login">Entrar</router-link></li>
+          <li><router-link to="/cadastro">Cadastrar</router-link></li>
+          <li><router-link to="/login">Sair</router-link></li>
+      </nav-bar-vue>
     </header>
 
     <main>
       <div class="container">
 
         <div class="row">
-          <grid-vue size="6">
-
-            <card-menu-vue>
-
-            </card-menu-vue>
-
+          <grid-vue size="8">
+          <card-menu-vue>
+            <slot name="menuesquerdo"/>
+          </card-menu-vue>
           </grid-vue>
-          <grid-vue size="6">
-            <slot/>
+          <grid-vue size="4">
+          <card-menu-vue>
+            <slot name="principal"/>
+          </card-menu-vue>
           </grid-vue>
         </div>
 
