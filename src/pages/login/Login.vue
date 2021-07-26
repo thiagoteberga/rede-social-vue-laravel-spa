@@ -7,27 +7,12 @@
 
       <span slot="principal">
         
-        <span v-if="!cadastro">
-
           <h2>Login</h2>
           
-          <input type="text" placeholder="Email" value="">
-          <input type="password" placeholder="*******" value="">
-          <button type="button" class="btn">Entrar</button>
-          <button type="button" class="btn blue" v-on:click="cadastro = !cadastro">Criar Conta</button>
-        </span>
-
-        <span v-if="cadastro">
-
-          <h2>Cadastro</h2>
-          
-          <input type="text" placeholder="Nome" value="">
-          <input type="text" placeholder="Email" value="">
-          <input type="password" placeholder="Senha" value="">
-          <input type="password" placeholder="Confirme a Senha" value="">
-          <button type="button" class="btn">Cadastrar</button>
-          <button type="button" class="btn blue" v-on:click="cadastro = !cadastro">Já tenho conta</button>
-        </span>
+          <input type="text" placeholder="Email" v-model="usuario.email">
+          <input type="password" placeholder="*******" v-model="usuario.password">
+          <button class="btn green" v-on:click="login()">Entrar</button>
+          <router-link to="/cadastro" class="btn blue">Criar Conta</router-link>
 
       </span>
     </login-template>
@@ -36,14 +21,29 @@
 
 <script>
 import LoginTemplate from '@/templates/LoginTemplate'
+import axios from 'axios';
 export default {
   name: 'Login',
   components: {
     LoginTemplate
   },
+  methods:{login(){
+      axios.post(`http://127.0.0.1:8000/api/login`, {
+        email: this.usuario.email,
+        password: this.usuario.password
+      })
+      .then(response => {
+        console.log("Retorno Recebido da API!");
+        console.log(response);
+      })
+      .catch(e => {
+        this.errors.push(e)
+        console.log("Erro na Comunicação com a API!");
+      })
+  }},
   data () {
     return {
-      cadastro: false
+      usuario:{email:'',password:''}
     }
   }
 }

@@ -13,8 +13,8 @@
           <input type="text" placeholder="Email" value="">
           <input type="password" placeholder="Senha" value="">
           <input type="password" placeholder="Confirme a Senha" value="">
-          <button type="button" class="btn">Cadastrar</button>
-          <button type="button" class="btn blue" v-on:click="cadastro = !cadastro">Já tenho conta</button>
+          <router-link to="/" class="btn green">Cadastrar</router-link>
+          <router-link to="/login" class="btn blue">Já tenho conta</router-link>
 
       </span>
     </login-template>
