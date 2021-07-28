@@ -1,11 +1,12 @@
 <template>
-  <span>
+  <span class="body-span">
     <header>
-      <nav-bar-vue color="amber darken-1" url="/" logo="Maroto">
-          <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/login">Entrar</router-link></li>
-          <li><router-link to="/cadastro">Cadastrar</router-link></li>
-          <li><router-link to="/login">Sair</router-link></li>
+      <nav-bar-vue color="light-blue darken-3" url="/" logo="Maroto">
+          <li v-if="usuario"><router-link to="/">Home</router-link></li>
+          <li v-if="!usuario"><router-link to="/login">Entrar</router-link></li>
+          <li v-if="!usuario"><router-link to="/cadastro">Cadastrar</router-link></li>
+          <li v-if="usuario"><router-link to="/perfil">{{usuario.name}}</router-link></li>
+          <li v-if="usuario"><a v-on:click="sair()">Sair</a></li>
       </nav-bar-vue>
     </header>
 
@@ -13,7 +14,7 @@
       <div class="container">
 
         <div class="row">
-          <grid-vue size="4">
+          <grid-vue size="s12 m12 l4">
 
             <card-menu-vue>
               <slot name="menuesquerdo" />
@@ -23,7 +24,7 @@
             </card-menu-vue>
 
           </grid-vue>
-          <grid-vue size="8">
+          <grid-vue size="s12 m12 l8">
             <slot name="principal" />
           </grid-vue>
         </div>
@@ -49,11 +50,33 @@ import GridVue from '@/components/layouts/GridVue'
 import CardMenuVue from '@/components/layouts/CardMenuVue'
 export default {
   name: 'SiteTemplate',
+  data(){
+    return {
+      usuario: false
+    }
+  },
   components: {
     NavBarVue,
     FooterVue,
     GridVue,
     CardMenuVue
+  },
+  created(){
+    console.log('Created.')
+    let usuarioSession = sessionStorage.getItem('belvedereUsuario');
+    if(usuarioSession){
+      this.usuario = JSON.parse(usuarioSession);
+     // this.usuario.token
+    }else{
+      this.$router.push('/login');
+    }
+  },
+  methods:{
+    sair(){
+      sessionStorage.clear();
+      this.usuario=false;
+      this.$router.push('/login');
+    }
   }
 }
 </script>

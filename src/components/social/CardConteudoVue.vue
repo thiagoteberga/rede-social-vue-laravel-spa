@@ -3,10 +3,10 @@
         <div class="card">
           <div class="card-content">
                 <div class="row valign-wrapper">
-                  <grid-vue size="1">
+                  <grid-vue size="s2 m2 l1">
                     <img :src="perfil" :alt="nome" class="circle responsive-img"> <!-- notice the "circle" class -->
                   </grid-vue>
-                  <grid-vue size="11">
+                  <grid-vue size="s10 m10 l11">
                     <span class="black-text">
                       <strong>{{nome || "Nome"}}</strong> - <small>{{data || "20/07/2021 - 22:47"}}</small>
                     </span>

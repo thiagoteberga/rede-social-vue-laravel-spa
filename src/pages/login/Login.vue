@@ -11,8 +11,8 @@
           
           <input type="text" placeholder="Email" v-model="usuario.email">
           <input type="password" placeholder="*******" v-model="usuario.password">
-          <button class="btn green" v-on:click="login()">Entrar</button>
-          <router-link to="/cadastro" class="btn blue">Criar Conta</router-link>
+          <button class="btn  light-blue darken-3" v-on:click="login()">Entrar</button>
+          <router-link to="/cadastro" class="btn  light-blue">Criar Conta</router-link>
 
       </span>
     </login-template>
@@ -35,9 +35,24 @@ export default {
       .then(response => {
         console.log("Retorno Recebido da API!");
         console.log(response);
+        if(response.data.token){
+          console.log('Login com Sucesso');
+          sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data));
+          this.$router.push('/');
+        }else if(response.data.status == false){
+          console.log('Login nao Existe');
+          alert('Usuário ou senha inválidos!');
+        }else{
+          console.log('Erro de Validacao');
+          let erros = '';
+          for (let erro of Object.values(response.data)){
+            erros += erro +" ";
+          }
+          alert(erros);
+        }
       })
       .catch(e => {
-        this.errors.push(e)
+        alert("Servido indisponível no momento, tente novamente mais tarde!")
         console.log("Erro na Comunicação com a API!");
       })
   }},

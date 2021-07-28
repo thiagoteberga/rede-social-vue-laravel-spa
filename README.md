@@ -1,8 +1,38 @@
-# Learning VueJS
+# Rede Social com Vue JS e API Laravel
 
-> Learning how to work with VueJS and Laravel
+> Plataforma criada durante o curso.
 
-## Build Setup
+## Curso de SPA com Vue JS e API Laravel
+- [x] Veja o curso [clicando aqui](https://www.udemy.com/course/spa-com-vue-js/).
+
+
+# Ferramentas Utilizadas:
+## Composer:
+https://getcomposer.org/download/
+
+## NodeJS:
+https://nodejs.org/en/download/
+
+## Git:
+https://git-scm.com/downloads
+
+## Cmder:
+https://cmder.net/
+
+## Postman:
+https://www.getpostman.com/
+
+## Pacote de Icones:
+https://www.flaticon.com/br/packs/learning-265
+
+## Criar o Projeto com Vue:
+https://cli.vuejs.org/guide/prototyping.html
+
+`npm install -g @vue/cli @vue/cli-service-global`
+
+
+# Comandos para a Build de Produção:
+
 
 ``` bash
 # install dependencies
@@ -18,95 +48,52 @@ npm run build
 npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 
-# (Laravel 5.5) 
+# (Configuração do Laravel 8.0) 
 ## API com Laravel
 
 ## Instalar o Laravel
-composer create-project --prefer-dist laravel/laravel webservice "5.5.*"
-
-composer require laravel/passport
-
-configurar o banco de dados ...
-
-php artisan migrate
-
-php artisan passport:install
-
-colocar no User:
-use Laravel\Passport\HasApiTokens;
-use HasApiTokens, Notifiable;
-
-e o config/auth
-
-'api' => [
-    'driver' => 'passport',
-    'provider' => 'users',
-],
-
-pronto...
-
-criar rotas de cadastro e de login e depois testar o acesso com token
-
-Baixar o Postman:
-https://www.getpostman.com/
-
-
-
-
-
-
-
-# (Laravel 8.0) 
-## API com Laravel
-
-## Instalar o Laravel
-
 `composer create-project --prefer-dist laravel/laravel webservice`
 
-composer require laravel/passport
+## Configurar o banco de dados MySQL, ajusta o arquivo "webservice\.env"
+`composer require laravel/passport`
 
-Configurar o banco de dados MySQL, ajusta o arquivo "webservice\.env"
+## Configurar o banco de dados ...
+`php artisan migrate`
+`php artisan passport:install`
 
-php artisan migrate
-
-php artisan passport:install
-
-`
-Client ID: 1
-Client secret: ARSYJ1hgcBTJF8ktUNj7NCaKupgjNFzcZnZmP4WT
-Password grant client created successfully.
-Client ID: 2
-Client secret: WdWkQhDmCiJlN3VuRL2gPzDxLh4ZGi5Ou6zKpPAN
-`
-
-colocar no "webservice\app\Models\User.php":
+## Colocar no User:
 use Laravel\Passport\HasApiTokens;
 use HasApiTokens, Notifiable;
 
-e o config/auth
-
+## Colocar no "config/auth"
 'api' => [
     'driver' => 'passport',
     'provider' => 'users',
 ],
 
-pronto...
+## Aula 27
+`https://laravel.com/docs/7.x/authentication`
 
-//Aula 27
-//https://laravel.com/docs/7.x/authentication
+## Instalar o Laravel Ui
+`composer require laravel/ui:^3.x`
 
-composer require laravel/ui:^3.x
+## Instalar o Modulo de Autenticacao
+`php artisan ui vue --auth`
 
-php artisan ui vue --auth
+## Instalar o Axios
+`npm install axios --save`
 
-npm install axios --save
+## Rodar o server Laravel
+`php artisan serve`
 
-php artisan serve
+## Adicionar uma Migration
+``` bash
+# Criar uma Migration para Adicionar o Campo IMAGEM
+php artisan make:migration add_image_table_users --table=users
 
-Criar rotas de cadastro e de login e depois testar o acesso com token
+# Rodar a Migration para que o Laravel efetive a alteracao no Banco de Dados
+php artisan migrate`
+```
 
-Baixar o Postman:
-https://www.getpostman.com/

@@ -1,12 +1,15 @@
 <template>
+
       <div class="row">
-        <grid-vue size="12" class="input-field">
+        <grid-vue size="s12 m12 l12" class="input-field">
           <textarea v-model="conteudo" id="Conteudo" class="materialize-textarea"></textarea>
           <label for="Conteudo">{{placeholder || "O que está acontecendo?"}}</label>
         </grid-vue>
-        <p>
-          <grid-vue v-if="conteudo" class="btn waves-effect waves-light" size="2 offset-s10">{{botao || "Publicar"}}</grid-vue>
-        </p>
+         <p>
+         <grid-vue v-if="conteudo" class="btn waves-effect waves-light" size="s12 m8 l2 offset-m4 offset-l10">
+             {{botao || "Publicar"}}
+         </grid-vue>
+         </p>
       </div>
 </template>
 
