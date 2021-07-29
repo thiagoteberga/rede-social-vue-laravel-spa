@@ -3,7 +3,7 @@
     <site-template>
       <span slot="menuesquerdo">
         <img
-          src="http://solucoes.prodesp.sp.gov.br/wp-content/uploads/2020/08/LOGIN-SP-1024x797.png"
+          :src="this.usuario.imagem"
           alt="Imagem de Login"
           class="responsive-img"
         />
@@ -24,10 +24,10 @@
           <div class="file-field input-field col s12">
             <div class="btn light-blue">
               <span>Imagem</span>
-              <input type="file" />
+              <input type="file" v-on:change="salvaImagem" />
             </div>
             <div class="file-path-wrapper">
-              <input class="file-path validate" type="text"  />
+              <input class="file-path validate" type="text" />
             </div>
           </div>
 
@@ -50,7 +50,7 @@
 <script>
 import SiteTemplate from "@/templates/SiteTemplate";
 import CardMenuVue from '@/components/layouts/CardMenuVue'
-import axios from "axios";
+
 export default {
   name: "Perfil",
   components: {
@@ -63,45 +63,74 @@ export default {
         name: "",
         email: "",
         password: "",
-        password_confirmation: ""
+        password_confirmation: "",
+        imagem: ""
       },
       usuarioLogado: ""
     };
   },
   created(){
-    console.log('Created.')
-    let usuarioSession = sessionStorage.getItem('belvedereUsuario');
+    //console.log('Created.')
+    let usuarioSession = this.$store.getters.getUsuario;
     if(usuarioSession){
-      this.usuarioLogado = JSON.parse(usuarioSession);
+      this.usuarioLogado = this.$store.getters.getUsuario;
       this.usuario.name = this.usuarioLogado.name;
       this.usuario.email = this.usuarioLogado.email;
+      this.usuario.imagem = this.usuarioLogado.imagem;
     }
   },
   methods: {
+    salvaImagem(e){
+      let imageFile = e.target.files || e.dataTransfer.files;
+      //e.target.files -> Quando é buscado pelo browser
+      //e.dataTransfer.files -> Funcao arrasta e solta
+
+      if(!imageFile.length){
+        return;
+      }
+
+      let reader = new FileReader();
+      reader.onloadend = (e) => {
+        this.usuario.imagem = e.target.result;
+      };
+
+      reader.readAsDataURL(imageFile[0]);
+      //console.log(this.usuario.imagem);
+      
+
+      
+    },
     perfil() {
-      axios
-        .put(`http://127.0.0.1:8000/api/perfil`, {
+      this.$http
+        .put(this.$urlAPI+`perfil`, {
           name: this.usuario.name,
           email: this.usuario.email,
           password: this.usuario.password,
           password_confirmation: this.usuario.password_confirmation,
-        },{"headers":{"authorization":"Bearer "+this.usuarioLogado.token}})
+          imagem: this.usuario.imagem,
+        },{"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
         .then((response) => {
           console.log("Retorno Recebido da API!");
           console.log(response);
 
-          if (response.data.token) {
+          if (response.data.status) {
             console.log("Perfil atualizado com Sucesso");
-            console.log(response.data);
-            sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data));
+            //console.log(response.data);
+            this.usuario = response.data.usuario;
+            this.$store.commit('setUsuario',response.data.usuario);
+            sessionStorage.setItem('belvedereUsuario',JSON.stringify(this.usuario));
             alert('Perfil atualizado!');
-          } else {
+
+          } else if (response.data.status == false && response.data.validacao == true){
             console.log("Erro de Validacao");
             let erros = "";
-            for (let erro of Object.values(response.data)) {
+            for (let erro of Object.values(response.data.erros)) {
               erros += erro + " ";
             }
             alert(erros);
+
+          } else {
+            alert('Erro Generico');
           }
         })
         .catch((e) => {

@@ -21,35 +21,35 @@
 
 <script>
 import LoginTemplate from '@/templates/LoginTemplate'
-import axios from 'axios';
 export default {
   name: 'Login',
   components: {
     LoginTemplate
   },
   methods:{login(){
-      axios.post(`http://127.0.0.1:8000/api/login`, {
+      this.$http.post(this.$urlAPI+`login`, {
         email: this.usuario.email,
         password: this.usuario.password
       })
       .then(response => {
-        console.log("Retorno Recebido da API!");
-        console.log(response);
-        if(response.data.token){
-          console.log('Login com Sucesso');
-          sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data));
-          this.$router.push('/');
-        }else if(response.data.status == false){
-          console.log('Login nao Existe');
-          alert('Usuário ou senha inválidos!');
-        }else{
-          console.log('Erro de Validacao');
-          let erros = '';
-          for (let erro of Object.values(response.data)){
-            erros += erro +" ";
+          console.log("Retorno Recebido da API!");
+          console.log(response);
+          if(response.data.status){
+              console.log('Login com Sucesso');
+              this.$store.commit('setUsuario',response.data.usuario);
+              sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data.usuario));
+              this.$router.push('/');
+          }else if(response.data.status == false && response.data.validacao == true){
+              console.log('Erro de Validacao');
+              let erros = '';
+              for (let erro of Object.values(response.data.erros)){
+                erros += erro +" ";
+              }
+              alert(erros);
+          }else{
+              console.log('Login nao Existe');
+              alert('Usuário ou senha inválidos!');
           }
-          alert(erros);
-        }
       })
       .catch(e => {
         alert("Servido indisponível no momento, tente novamente mais tarde!")

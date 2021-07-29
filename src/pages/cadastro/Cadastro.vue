@@ -23,7 +23,6 @@
 
 <script>
 import LoginTemplate from '@/templates/LoginTemplate'
-import axios from 'axios';
 export default {
   name: 'Cadastro',
   components: {
@@ -35,30 +34,31 @@ export default {
     }
   },
   methods:{cadastro(){
-      axios.post(`http://127.0.0.1:8000/api/cadastro`, {
+      this.$http.post(this.$urlAPI+`cadastro`, {
         name: this.usuario.name,
         email: this.usuario.email,
         password: this.usuario.password,
         password_confirmation: this.usuario.password_confirmation,
       })
       .then(response => {
-        console.log("Retorno Recebido da API!");
-        console.log(response);
-        if(response.data.token){
-          console.log('Cadastro realizado com Sucesso');
-          sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data));
-          this.$router.push('/');
-        }else if(response.data.status == false){
-          console.log('Erro no cadastro, tente novamente mais tarde!');
-          alert('Erro no cadastro, tente novamente mais tarde!');
-        }else{
-          console.log('Erro de Validacao');
-          let erros = '';
-          for (let erro of Object.values(response.data)){
-            erros += erro +" ";
+          console.log("Retorno Recebido da API!");
+          console.log(response);
+          if(response.data.status){
+              console.log('Cadastro realizado com Sucesso');
+              this.$store.commit('setUsuario',response.data.usuario);
+              sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data.usuario));
+              this.$router.push('/');
+          }else if(response.data.status == false && response.data.validacao == true){
+              console.log('Erro de Validacao');
+              let erros = '';
+              for (let erro of Object.values(response.data.erros)){
+                erros += erro +" ";
+              }
+              alert(erros);
+          }else{
+              console.log('Erro no cadastro, tente novamente mais tarde!');
+              alert('Erro no cadastro, tente novamente mais tarde!');
           }
-          alert(erros);
-        }
       })
       .catch(e => {
         alert("Servido indisponível no momento, tente novamente mais tarde!")

@@ -20,7 +20,10 @@
               <slot name="menuesquerdo" />
             </card-menu-vue>
             <card-menu-vue>
-              <h3>Thiago</h3>
+              <h3>Amigos</h3>
+              <li>Afonso</li>
+              <li>Marcio</li>
+              <li>Diego</li>
             </card-menu-vue>
 
           </grid-vue>
@@ -62,11 +65,10 @@ export default {
     CardMenuVue
   },
   created(){
-    console.log('Created.')
-    let usuarioSession = sessionStorage.getItem('belvedereUsuario');
+    //Redireciona se nao estiver logado.
+    let usuarioSession = this.$store.getters.getUsuario;
     if(usuarioSession){
-      this.usuario = JSON.parse(usuarioSession);
-     // this.usuario.token
+      this.usuario = this.$store.getters.getUsuario;
     }else{
       this.$router.push('/login');
     }
@@ -74,6 +76,7 @@ export default {
   methods:{
     sair(){
       sessionStorage.clear();
+      this.$store.commit('setUsuario','');
       this.usuario=false;
       this.$router.push('/login');
     }

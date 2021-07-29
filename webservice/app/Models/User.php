@@ -43,4 +43,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //https://laravel.com/docs/8.x/eloquent-relationships#one-to-many
+    public function comentarios()
+    {
+        return $this->hasMany(Comentario::class);
+    }
+
+    //https://laravel.com/docs/8.x/eloquent-relationships#one-to-many
+    public function conteudos()
+    {
+        return $this->hasMany(Conteudo::class);
+    }
+
+    //https://laravel.com/docs/8.x/eloquent-relationships#many-to-many
+    public function curtidas()
+    {
+        return $this->belongsToMany(Conteudo::class, 'curtidas', 'user_id', 'conteudo_id');
+    }
+
+    //https://laravel.com/docs/8.x/eloquent-relationships#many-to-many
+    public function amigos()
+    {
+        return $this->belongsToMany(User::class, 'amigos', 'user_id', 'amigo_id');
+    }
+
+    public function getImagemAttribute($value)
+    {
+        return asset($value);
+    }
 }

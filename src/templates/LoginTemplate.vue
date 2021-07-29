@@ -56,18 +56,11 @@ export default {
     CardMenuVue
   },
   created(){
-    console.log('Created.')
-    let usuarioSession = sessionStorage.getItem('belvedereUsuario');
+    //console.log('Created.')
+    let usuarioSession = this.$store.getters.getUsuario;
     if(usuarioSession){
-      this.usuario = JSON.parse(usuarioSession);
+      this.usuario = this.$store.getters.getUsuario;
       this.$router.push('/');
-    }
-  },
-  methods:{
-    sair(){
-      sessionStorage.clear();
-      this.usuario=false;
-      this.$router.push('/login');
     }
   }
 }
