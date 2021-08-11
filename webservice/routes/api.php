@@ -25,6 +25,18 @@ Route::get('/teste',function (Request $request) {
     $user2 = User::find(2);
     $user3 = User::find(3);
 
+    //dd(Conteudo::all()); //Lista todos os conteudos
+
+     //Add Comentario
+     /*
+     $conteudo = Conteudo::find(14);
+     $user -> comentarios() -> create([
+         'conteudo_id'=>$conteudo->id,
+         'texto'=>'Texto Comentario - Show de Bola!',
+         'data'=>date('Y-m-d H:i:s')
+     ]);
+     */
+
     /*
     // Apagar Conteudos
     $conteudos = Conteudo::all();
@@ -91,4 +103,5 @@ Route::middleware('auth:api')->put('/perfil','App\Http\Controllers\Usuario\Usuar
 Route::middleware('auth:api')->post('/conteudo/adicionar','App\Http\Controllers\Conteudo\ConteudoController@adicionar');
 Route::middleware('auth:api')->get('/conteudo/lista','App\Http\Controllers\Conteudo\ConteudoController@lista');
 Route::middleware('auth:api')->put('/conteudo/curtir/{id}','App\Http\Controllers\Conteudo\ConteudoController@curtir');
+Route::middleware('auth:api')->put('/conteudo/comentar/{id}','App\Http\Controllers\Conteudo\ConteudoController@comentar');
 

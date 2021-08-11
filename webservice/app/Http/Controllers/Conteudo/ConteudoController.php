@@ -16,6 +16,7 @@ class ConteudoController extends Controller
 
         foreach ($conteudos as $key => $conteudo) {
             $conteudo->total_curtidas = $conteudo->curtidas->count();
+            $conteudo->comentarios = $conteudo->comentarios()->with('user')->get();
             $curtiu = $user->curtidas()->find($conteudo->id);
             if($curtiu){
                 $conteudo->curtiu_conteudo = true;
@@ -70,6 +71,25 @@ class ConteudoController extends Controller
     
             return ['status'=>true, 
                     'curtidas'=> $conteudo->curtidas->count(),
+                    'lista' => $this->lista($request)];
+        } else {
+            return ['status'=>false,'validacao'=>true,'erros'=> 'Conteúdo não exite!'];
+        }
+        
+    }
+
+    public function comentar($id, Request $request){
+
+        $conteudo = Conteudo::find($id);
+        if($conteudo){
+            $user = $request->user();
+            $user -> comentarios() -> create([
+                'conteudo_id'=>$conteudo->id,
+                'texto'=>$request->texto,
+                'data'=>date('Y-m-d H:i:s')
+            ]);
+    
+            return ['status'=>true, 
                     'lista' => $this->lista($request)];
         } else {
             return ['status'=>false,'validacao'=>true,'erros'=> 'Conteúdo não exite!'];

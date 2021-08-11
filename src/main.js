@@ -34,9 +34,26 @@ var store = {
     },
     setConteudosLinhaTempo(state,n){
       state.conteudosLinhaTempo = n;
+    },
+    //Aula 80
+    setPaginacaoConteudosLinhaTempo(state,lista){
+      for(let item of lista){
+        state.conteudosLinhaTempo.push(item);
+      }
     }
   }
-}
+};
+
+Vue.directive('scroll', {
+  inserted: function (el, binding) {
+    let f = function (evt) {
+      if (binding.value(evt, el)) {
+        window.removeEventListener('scroll', f)
+      }
+    }
+    window.addEventListener('scroll', f)
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({

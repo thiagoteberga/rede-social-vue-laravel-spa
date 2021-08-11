@@ -5,7 +5,7 @@
 ## Curso de SPA com Vue JS e API Laravel
 - [x] Veja o curso [clicando aqui](https://www.udemy.com/course/spa-com-vue-js/).
 
-# Iidentar com o VSCode:
+# Identar com o VSCode:
 - Windows: shift + alt + f
 - Mac: shift + option + f
 - Linux: ctrl + shift + i
@@ -154,6 +154,10 @@ composer require barryvdh/laravel-cors
 -user_id
 -conteudo_id
 
+```
+
+## Comando úteis no Laravel
+``` bash
 #Criando Models e Migrations
 php artisan make:model Conteudo -m
 php artisan make:model Comentario -m
@@ -171,5 +175,8 @@ php artisan migrate:rollback
 php artisan migrate:status
 
 
-```
-
+#Utilizando o Tinker para Gerenciar os Dados no Laravel
+php artisan tinker
+App\Models\User::all();
+$listaConteudos = App\Models\Conteudo::all();
+App\Models\Conteudo::find(17)->delete();

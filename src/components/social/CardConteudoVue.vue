@@ -20,9 +20,26 @@
           <div class="card-action">
             <p>
                 <a @click="curtida(id)">
-                    <i class="small material-icons small">{{curtiu}}</i>{{this.totalCurtidas}}
+                    <i class="material-icons small">{{curtiu}}</i>{{this.totalCurtidas}}
                 </a>
-                <i class="small material-icons small">insert_comment</i>
+                <a @click="abreComentarios()">
+                    <i class="material-icons small">insert_comment</i>{{listaComentarios.length}}
+                </a>
+            </p>
+            <p v-if="exibirComentario" class="right-align">
+                <input v-model="textoComentario" type="text" placeholder="Comentar">
+                <button @click="comentar(id)" v-if="textoComentario" class="btn waves-effect waves-light orange"><i class="material-icons small">send</i></button>
+            </p>
+            <p v-if="exibirComentario">
+              <ul class="collection">
+                <li class="collection-item avatar" v-for="item in comentarios" :key="item.id">
+                  <img :src="item.user.imagem" alt="" class="circle">
+                  <span class="title"> {{item.user.name}} - ID: {{item.user_id}} <small> - {{item.data}}</small></span>
+                  <p>
+                    {{item.texto}}
+                  </p>
+                </li>
+              </ul>
             </p>
           </div>
         </div>
@@ -70,13 +87,49 @@ export default {
         console.log("Erro na Comunicação com a API!");
       })
 
+    },
+    comentar(id){
+      if(!this.textoComentario){
+        return;
+      }
+      this.$http.put(this.$urlAPI+`conteudo/comentar/`+id, 
+                     {texto:this.textoComentario},
+                     {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
+      .then(response => {
+          console.log("Retorno Recebido da API!");
+          console.log(response);
+
+          if(response.status){
+              console.log('Retorno Comentario com Sucesso');
+              this.textoComentario = '';
+              this.$store.commit('setConteudosLinhaTempo',response.data.lista.conteudos.data);
+              //alert(id);
+          }else if(response.data.status == false && response.data.validacao == true){
+              console.log('Erro de Validacao');
+              alert(response.data.erros);
+          }else{
+              console.log('Erro no Servidor');
+              alert('Problemas ao Gravar!');
+          }
+      })
+      .catch(e => {
+        alert("Servidor indisponível no momento, tente novamente mais tarde!")
+        console.log("Erro na Comunicação com a API!");
+      })
+
+    },
+    abreComentarios(){
+      this.exibirComentario = !this.exibirComentario; //Ao clicar ele alterar para TRUE ou FALSE
     }
   },
-  props:['id','perfil','nome','data','totalcurtidas','curtiuconteudo'],
+  props:['id','perfil','nome','data','totalcurtidas','curtiuconteudo','comentarios'],
   data () {
     return {
       curtiu: this.curtiuconteudo ? 'favorite' : 'favorite_border',
       totalCurtidas: this.totalcurtidas,
+      exibirComentario: false,
+      textoComentario: '',
+      listaComentarios: this.comentarios || []
     }
   }
 }

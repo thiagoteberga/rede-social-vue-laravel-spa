@@ -21,6 +21,7 @@
       <card-conteudo-vue v-for="item in listaConteudos" :key="item.id"
         :id="item.id"
         :totalcurtidas="item.total_curtidas"
+        :comentarios="item.comentarios"
         :curtiuconteudo="item.curtiu_conteudo"
         :perfil="item.user.imagem"
         :nome="item.user.name"
@@ -33,7 +34,10 @@
             :link="item.link">
           </card-detalhe-vue>
       </card-conteudo-vue>
-
+      <p class="center-align" v-if="this.urlProximaPagina">
+        <button @click="carregaPaginacao()" type="button" class="btn blue">Carregar Mais...</button>
+      </p>
+      <div v-scroll="handleScroll"></div>
     </span>
   </site-template>
 </template>
@@ -52,15 +56,57 @@ export default {
     PublicarConteudoVue,
     SiteTemplate,
     GridVue
+  },  
+  data () {
+    return {
+      usuarioLogado:"",
+      urlProximaPagina: null,
+      pararScroll: false
+    }
+  },
+  methods: {
+    handleScroll() {
+      //console.log(window.scrollY); //Posicao da tela em que a pessoa esta
+      //console.log(document.body.clientHeight); //Tamanho da Pagina
+
+      if(this.pararScroll){
+        return;
+      }
+
+      if(window.scrollY >= document.body.clientHeight - 1324){
+        //console.log('OKKKK');
+        this.pararScroll = true;
+        this.carregaPaginacao();
+      }
+    },
+    carregaPaginacao(){
+      //alert('Ok');
+
+      if(!this.urlProximaPagina){
+        return;
+      }
+
+      this.$http
+      .get(this.urlProximaPagina, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
+      .then((response) => {
+        console.log("Retorno Recebido da API!");
+        console.log(response);
+        if(response.data.status){
+          this.$store.commit('setPaginacaoConteudosLinhaTempo',response.data.conteudos.data);
+          this.urlProximaPagina = response.data.conteudos.next_page_url;
+          this.pararScroll = false;
+        }
+
+      })
+      .catch((e) => {
+        alert("Servido indisponível no momento, tente novamente mais tarde!");
+        console.log("Erro na Comunicação com a API!");
+      });
+    }
   },
   computed:{
     listaConteudos(){
       return this.$store.getters.getConteudosLinhaTempo;
-    }
-  },
-  data () {
-    return {
-      usuarioLogado:""
     }
   },
   created(){
@@ -76,6 +122,7 @@ export default {
         console.log(response);
         if(response.data.status){
           this.$store.commit('setConteudosLinhaTempo',response.data.conteudos.data);
+          this.urlProximaPagina = response.data.conteudos.next_page_url;
         }
 
       })
