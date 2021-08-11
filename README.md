@@ -32,6 +32,9 @@ https://www.flaticon.com/br/packs/learning-265
 ## Criar o Projeto com Vue:
 https://cli.vuejs.org/guide/prototyping.html
 
+## SLUG para Links Amigaveis
+https://www.npmjs.com/package/slug
+
 `npm install -g @vue/cli @vue/cli-service-global`
 
 
@@ -89,6 +92,9 @@ use HasApiTokens, Notifiable;
 
 ## Instalar o Axios
 `npm install axios --save`
+
+## Instalar o SLUG
+npm install slug --save
 
 ## Rodar o server Laravel
 `php artisan serve`

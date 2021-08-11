@@ -105,3 +105,6 @@ Route::middleware('auth:api')->get('/conteudo/lista','App\Http\Controllers\Conte
 Route::middleware('auth:api')->put('/conteudo/curtir/{id}','App\Http\Controllers\Conteudo\ConteudoController@curtir');
 Route::middleware('auth:api')->put('/conteudo/comentar/{id}','App\Http\Controllers\Conteudo\ConteudoController@comentar');
 
+Route::middleware('auth:api')->get('/conteudo/pagina/lista/{id}','App\Http\Controllers\Conteudo\ConteudoController@pagina');
+
+Route::middleware('auth:api')->post('/usuario/seguir','App\Http\Controllers\Usuario\UsuarioController@seguir');

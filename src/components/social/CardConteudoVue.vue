@@ -4,11 +4,15 @@
           <div class="card-content">
                 <div class="row valign-wrapper">
                   <grid-vue size="s2 m2 l1">
-                    <img :src="perfil" :alt="nome" class="circle responsive-img"> <!-- notice the "circle" class -->
+                    <router-link :to="'/pagina/'+userid+'/'+$slug(nome,{lower: true})">
+                      <img :src="perfil" :alt="nome" class="circle responsive-img"> <!-- notice the "circle" class -->
+                    </router-link>
                   </grid-vue>
                   <grid-vue size="s10 m10 l11">
                     <span class="black-text">
-                      <strong>{{nome || "Nome"}}</strong> - <small>{{data || "20/07/2021 - 22:47"}}</small>
+                      <router-link :to="'/pagina/'+userid+'/'+$slug(nome,{lower: true})">
+                        <strong>{{nome || "Nome"}}</strong> - <small>{{data || "20/07/2021 - 22:47"}}</small>
+                      </router-link>
                     </span>
                   </grid-vue>
                 </div>
@@ -63,7 +67,7 @@ export default {
           console.log("Retorno Recebido da API!");
           console.log(response);
 
-          if(response.status){
+          if(response.data.status){
               console.log('Retorno Curtidas com Sucesso');
               this.totalCurtidas = response.data.curtidas;
               this.$store.commit('setConteudosLinhaTempo',response.data.lista.conteudos.data);
@@ -99,7 +103,7 @@ export default {
           console.log("Retorno Recebido da API!");
           console.log(response);
 
-          if(response.status){
+          if(response.data.status){
               console.log('Retorno Comentario com Sucesso');
               this.textoComentario = '';
               this.$store.commit('setConteudosLinhaTempo',response.data.lista.conteudos.data);
@@ -122,7 +126,7 @@ export default {
       this.exibirComentario = !this.exibirComentario; //Ao clicar ele alterar para TRUE ou FALSE
     }
   },
-  props:['id','perfil','nome','data','totalcurtidas','curtiuconteudo','comentarios'],
+  props:['id','userid','perfil','nome','data','totalcurtidas','curtiuconteudo','comentarios'],
   data () {
     return {
       curtiu: this.curtiuconteudo ? 'favorite' : 'favorite_border',
