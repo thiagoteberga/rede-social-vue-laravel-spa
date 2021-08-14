@@ -33,44 +33,27 @@
     </span>
 
     <span slot="principal">
-      <publicar-conteudo-vue />
-
-      <card-conteudo-vue v-for="item in listaConteudos" :key="item.id"
+      <card-usuario-vue v-for="item in listaUsuarios" :key="item.id"
         :id="item.id"
-        :totalcurtidas="item.total_curtidas"
-        :comentarios="item.comentarios"
-        :curtiuconteudo="item.curtiu_conteudo"
-        :userid="item.user.id"
-        :perfil="item.user.imagem"
-        :nome="item.user.name"
-        :data="item.data">
+        :userid="item.id"
+        :perfil="item.imagem"
+        :nome="item.name"
+        :email="item.email">
+      </card-usuario-vue>
 
-          <card-detalhe-vue 
-            :img="item.imagem"
-            :txt="item.titulo"
-            :titulo="item.texto"
-            :link="item.link">
-          </card-detalhe-vue>
-      </card-conteudo-vue>
-      <p class="center-align" v-if="this.urlProximaPagina">
-        <button @click="carregaPaginacao()" type="button" class="btn blue">Carregar Mais...</button>
-      </p>
-      <div v-scroll="handleScroll"></div>
     </span>
   </site-template>
 </template>
 
 <script>
-import CardConteudoVue from '@/components/social/CardConteudoVue'
-import CardDetalheVue from '@/components/social/CardDetalheVue'
+import CardUsuarioVue from '@/components/social/CardUsuarioVue'
 import PublicarConteudoVue from '@/components/social/PublicarConteudoVue'
 import GridVue from '@/components/layouts/GridVue'
 import SiteTemplate from '@/templates/SiteTemplate'
 export default {
-  name: 'Home',
+  name: 'Usuarios',
   components: {
-    CardConteudoVue,
-    CardDetalheVue,
+    CardUsuarioVue,
     PublicarConteudoVue,
     SiteTemplate,
     GridVue
@@ -78,8 +61,6 @@ export default {
   data () {
     return {
       usuarioLogado: '',
-      urlProximaPagina: null,
-      pararScroll: false,
       seguindo: [],
       seguidores: [],
       nomeUsuarioLogado: '' //Para nao dar erro ao carregar o Slug
@@ -98,15 +79,17 @@ export default {
         this.usuarioLogado = this.$store.getters.getUsuario;
 
         this.$http
-        .get(this.$urlAPI+`conteudo/lista`, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
+        .get(this.$urlAPI+`usuario/lista`, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
         .then((response) => {
-          console.log("Retorno Recebido da API!");
+          console.log("Retorno Recebido da API Lista!");
           console.log(response);
-          if(response.data.status){
-            this.$store.commit('setConteudosLinhaTempo',response.data.conteudos.data);
-            this.urlProximaPagina = response.data.conteudos.next_page_url;
-            this.nomeUsuarioLogado = this.usuarioLogado.name;
 
+          if(response.status){
+            this.$store.commit('setUsuariosCadastrados',response.data.usuarios);
+            this.nomeUsuarioLogado = this.usuarioLogado.name;
+            console.log(response.data.usuarios);
+            console.log("Entrou");
+            
             //Retorna Lista de Seguidores
             this.$http
             .get(this.$urlAPI+`usuario/meusseguidores`, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
@@ -137,48 +120,10 @@ export default {
 
       }
     },
-    handleScroll() {
-      //console.log(window.scrollY); //Posicao da tela em que a pessoa esta
-      //console.log(document.body.clientHeight); //Tamanho da Pagina
-
-      if(this.pararScroll){
-        return;
-      }
-
-      if(window.scrollY >= document.body.clientHeight - 1324){
-        //console.log('OKKKK');
-        this.pararScroll = true;
-        this.carregaPaginacao();
-      }
-    },
-    carregaPaginacao(){
-      //alert('Ok');
-
-      if(!this.urlProximaPagina){
-        return;
-      }
-
-      this.$http
-      .get(this.urlProximaPagina, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
-      .then((response) => {
-        console.log("Retorno Recebido da API!");
-        console.log(response);
-        if(response.data.status && this.$route.name == 'Home'){
-          this.$store.commit('setPaginacaoConteudosLinhaTempo',response.data.conteudos.data);
-          this.urlProximaPagina = response.data.conteudos.next_page_url;
-          this.pararScroll = false;
-        }
-
-      })
-      .catch((e) => {
-        alert("Servido indisponível no momento, tente novamente mais tarde!");
-        console.log("Erro na Comunicação com a API!");
-      });
-    }
   },
   computed:{
-    listaConteudos(){
-      return this.$store.getters.getConteudosLinhaTempo;
+    listaUsuarios(){
+      return this.$store.getters.getUsuariosCadastrados;
     }
   }
 }

@@ -12,8 +12,10 @@ class ConteudoController extends Controller
 {
     public function lista(Request $request){
 
-        $conteudos = Conteudo::with('user')->orderBy('data','DESC')->paginate(5);
         $user = $request->user();
+        $amigos = $user->amigos()->pluck('id'); //seleciona apenas uma coluna do banco
+        $amigos->push($user->id); //sistema de colecoes - insere o ID do usuario logado no Array
+        $conteudos = Conteudo::whereIn('user_id',$amigos)->with('user')->orderBy('data','DESC')->paginate(5);
 
         foreach ($conteudos as $key => $conteudo) {
             $conteudo->total_curtidas = $conteudo->curtidas->count();
@@ -86,6 +88,7 @@ class ConteudoController extends Controller
         
     }
 
+    //CURTIR E COMENTAR DENTRO NA HOME
     public function curtir($id, Request $request){
 
         $conteudo = Conteudo::find($id);
@@ -116,6 +119,44 @@ class ConteudoController extends Controller
     
             return ['status'=>true, 
                     'lista' => $this->lista($request)];
+        } else {
+            return ['status'=>false,'validacao'=>true,'erros'=> 'Conteúdo não exite!'];
+        }
+        
+    }
+
+
+    //CURTIR E COMENTAR DENTRO DAS PAGINAS
+    public function curtirpagina($id, Request $request){
+
+        $conteudo = Conteudo::find($id);
+        if($conteudo){
+            $user = $request->user();
+            $user -> curtidas() -> toggle($conteudo->id);
+            //return $conteudo->curtidas->count();
+    
+            return ['status'=>true, 
+                    'curtidas'=> $conteudo->curtidas->count(),
+                    'lista' => $this->pagina($conteudo->user_id,$request)];
+        } else {
+            return ['status'=>false,'validacao'=>true,'erros'=> 'Conteúdo não exite!'];
+        }
+        
+    }
+
+    public function comentarpagina($id, Request $request){
+
+        $conteudo = Conteudo::find($id);
+        if($conteudo){
+            $user = $request->user();
+            $user -> comentarios() -> create([
+                'conteudo_id'=>$conteudo->id,
+                'texto'=>$request->texto,
+                'data'=>date('Y-m-d H:i:s')
+            ]);
+    
+            return ['status'=>true,
+                    'lista' => $this->pagina($conteudo->user_id,$request)];
         } else {
             return ['status'=>false,'validacao'=>true,'erros'=> 'Conteúdo não exite!'];
         }

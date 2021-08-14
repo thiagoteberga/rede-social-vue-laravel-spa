@@ -118,7 +118,7 @@ export default {
             //console.log(response.data);
             this.usuario = response.data.usuario;
             this.$store.commit('setUsuario',response.data.usuario);
-            sessionStorage.setItem('belvedereUsuario',JSON.stringify(this.usuario));
+            localStorage.setItem('usuarioLogadoSessao',JSON.stringify(this.usuario));
             alert('Perfil atualizado!');
 
           } else if (response.data.status == false && response.data.validacao == true){

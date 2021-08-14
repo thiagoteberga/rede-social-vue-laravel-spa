@@ -1,5 +1,5 @@
 <template>
-  <site-template>
+  <site-template :qtseguindo="seguindo.length" :qtseguidores="seguidores.length">
 
     <span slot="menuesquerdo">
       <div class="row valign-wrapper">
@@ -7,17 +7,31 @@
           <router-link :to="'/pagina/'+this.donoPagina.id+'/'+$slug(this.donoPagina.name,{lower: true})">
             <img :src="this.donoPagina.imagem" alt="this.donoPagina.name" class="circle responsive-img"> <!-- notice the "circle" class -->
           </router-link>
-          <button @click="amigo(donoPagina.id)" class="btn blue">Seguir</button>
+          <button v-if="exibeBtnSeguir" @click="amigo(donoPagina.id)" class="btn blue">{{textoBtnSeguir}}</button>
         </grid-vue>
         <grid-vue size="8">
           <span class="black-text">
           <router-link :to="'/pagina/'+this.donoPagina.id+'/'+$slug(this.donoPagina.name,{lower: true})">
             <h5>{{this.donoPagina.name}}</h5>
           </router-link>
-            This is a square image. Add the "circle" class to it to make it appear circular. Pagina personalizada.
+            O GG Easy é uma rede social em que os usuários postam comentários, compartilham fotos e links para notícias.
           </span>
         </grid-vue>
       </div>
+    </span>
+
+    <span slot="menuesquerdoseguindo">
+      <router-link v-for="item in this.seguindo" :key="item.id" :to="'/pagina/'+item.id+'/'+$slug(item.name,{lower: true})">
+        <li>{{item.name}}</li>
+      </router-link>
+      <li v-if="!seguindo.length">Nenhum Usuário</li>
+    </span>
+
+    <span slot="menuesquerdoseguidores">
+      <router-link v-for="item in this.seguidores" :key="item.id" :to="'/pagina/'+item.id+'/'+$slug(item.name,{lower: true})">
+        <li>{{item.name}}</li>
+      </router-link>
+      <li v-if="!seguidores.length">Nenhum Usuário</li>
     </span>
 
     <span slot="principal">
@@ -68,10 +82,86 @@ export default {
       usuarioLogado:"",
       urlProximaPagina: null,
       pararScroll: false,
-      donoPagina: {iamgem:'', name:''}
+      donoPagina: {iamgem:'', name:''},
+      exibeBtnSeguir: false,
+      seguindo: [],
+      seguidores: [],
+      seguindoLogado: [],
+      textoBtnSeguir: 'Seguir'
     }
   },
+  created(){
+    this.atualizaPagina();
+  },
+  watch:{
+    '$route':'atualizaPagina'
+  },
   methods: {
+    atualizaPagina(){
+
+      let usuarioSession = this.$store.getters.getUsuario;
+      if(usuarioSession){
+        this.usuarioLogado = this.$store.getters.getUsuario;
+
+        this.$http
+        .get(this.$urlAPI+`conteudo/pagina/lista/`+this.$route.params.id, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
+        .then((response) => {
+          console.log("Retorno Recebido da API!");
+          console.log(response);
+          if(response.data.status){
+            this.$store.commit('setConteudosLinhaTempo',response.data.conteudos.data);
+            this.urlProximaPagina = response.data.conteudos.next_page_url;
+            this.donoPagina = response.data.dono;
+
+            if(this.donoPagina.id != this.usuarioLogado.id){
+              this.exibeBtnSeguir = true;
+            } else {
+              this.exibeBtnSeguir = false;
+            }
+
+            //Retorna Lista de Seguidores
+            this.$http
+            .get(this.$urlAPI+`usuario/seguidores/`+this.donoPagina.id, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
+            .then((response) => {
+              console.log("Retorno Recebido da API!");
+              console.log(response);
+              if(response.data.status){
+                console.log(response.data);
+                this.seguindo = response.data.amigos;
+                this.seguindoLogado = response.data.amigoslogado;
+                this.eAmigo();
+                this.seguidores = response.data.seguidores;
+              }else{
+                alert(response.data.erros);
+              }
+            })
+            .catch((e) => {
+              alert("Lista Seguidores - Servidor indisponível no momento, tente novamente mais tarde!");
+              console.log("Erro na Comunicação com a API!");
+            });
+
+          }
+
+        })
+        .catch((e) => {
+          alert("Lista Postagens - Servidor indisponível no momento, tente novamente mais tarde!");
+          console.log("Erro na Comunicação com a API!");
+        });
+
+
+      }
+    },
+    eAmigo(){
+      
+      for(let amigo of this.seguindoLogado){
+        if(amigo.id == this.donoPagina.id){
+          this.textoBtnSeguir = 'Deixar de Seguir';
+          return;
+        }
+      }
+      this.textoBtnSeguir = 'Seguir';
+
+    },
     handleScroll() {
       //console.log(window.scrollY); //Posicao da tela em que a pessoa esta
       //console.log(document.body.clientHeight); //Tamanho da Pagina
@@ -86,24 +176,27 @@ export default {
         this.carregaPaginacao();
       }
     },
-    amigo(id) {
+    amigo(idamigo) {
       //console.log('Amigo estou aqui! ID: '+id);
 
-      this.$http.post(this.$urlAPI+`usuario/seguir/`, 
-                     {id:id},
+      this.$http.post(this.$urlAPI+`usuario/seguir`, 
+                     {id:idamigo},
                      {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
       .then(response => {
           console.log("Retorno Recebido da API!");
           console.log(response);
 
           if(response.data.status){
-              console.log(response.data.status)
+              //console.log(response.data.status)
+              this.seguindoLogado = response.data.amigos;
+              this.eAmigo();
+              this.seguidores = response.data.seguidores;
           }else{
               alert(response.data.erros);
           }
       })
       .catch(e => {
-        alert("Servidor indisponível no momento, tente novamente mais tarde!")
+        alert("Nao foi Possivel Seguir - Servidor indisponível no momento, tente novamente mais tarde!")
         console.log("Erro na Comunicação com a API!");
       })
 
@@ -129,7 +222,7 @@ export default {
 
       })
       .catch((e) => {
-        alert("Servido indisponível no momento, tente novamente mais tarde!");
+        alert("Paginacao - Servidor indisponível no momento, tente novamente mais tarde!");
         console.log("Erro na Comunicação com a API!");
       });
     }
@@ -138,33 +231,7 @@ export default {
     listaConteudos(){
       return this.$store.getters.getConteudosLinhaTempo;
     }
-  },
-  created(){
-    //console.log('Created.')
-    let usuarioSession = this.$store.getters.getUsuario;
-    if(usuarioSession){
-      this.usuarioLogado = this.$store.getters.getUsuario;
-
-      this.$http
-      .get(this.$urlAPI+`conteudo/pagina/lista/`+this.$route.params.id, {"headers":{"authorization":"Bearer "+this.$store.getters.getToken}})
-      .then((response) => {
-        console.log("Retorno Recebido da API!");
-        console.log(response);
-        if(response.data.status){
-          this.$store.commit('setConteudosLinhaTempo',response.data.conteudos.data);
-          this.urlProximaPagina = response.data.conteudos.next_page_url;
-          this.donoPagina = response.data.dono;
-        }
-
-      })
-      .catch((e) => {
-        alert("Servido indisponível no momento, tente novamente mais tarde!");
-        console.log("Erro na Comunicação com a API!");
-      });
-
-
-    }
-  },
+  }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

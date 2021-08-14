@@ -11,40 +11,11 @@
                   <grid-vue size="s10 m10 l11">
                     <span class="black-text">
                       <router-link :to="'/pagina/'+userid+'/'+$slug(nome,{lower: true})">
-                        <strong>{{nome || "Nome"}}</strong> - <small>{{data || "20/07/2021 - 22:47"}}</small>
+                        <strong>{{nome || "Nome"}}</strong> - <small>{{email}}</small>
                       </router-link>
                     </span>
                   </grid-vue>
                 </div>
-
-                <slot>
-                </slot>
-
-          </div>
-          <div class="card-action">
-            <p>
-                <a @click="curtida(id)">
-                    <i class="material-icons small">{{curtiu}}</i>{{this.totalCurtidas}}
-                </a>
-                <a @click="abreComentarios()">
-                    <i class="material-icons small">insert_comment</i>{{listaComentarios.length}}
-                </a>
-            </p>
-            <p v-if="exibirComentario" class="right-align">
-                <input v-model="textoComentario" type="text" placeholder="Comentar">
-                <button @click="comentar(id)" v-if="textoComentario" class="btn waves-effect waves-light orange"><i class="material-icons small">send</i></button>
-            </p>
-            <p v-if="exibirComentario">
-              <ul class="collection">
-                <li class="collection-item avatar" v-for="item in comentarios" :key="item.id">
-                  <img :src="item.user.imagem" alt="" class="circle">
-                  <span class="title"> {{item.user.name}} - ID: {{item.user_id}} <small> - {{item.data}}</small></span>
-                  <p>
-                    {{item.texto}}
-                  </p>
-                </li>
-              </ul>
-            </p>
           </div>
         </div>
       </div>
@@ -53,11 +24,11 @@
 <script>
 import GridVue from '@/components/layouts/GridVue'
 export default {
-  name: 'CardConteudoVue',
+  name: 'CardUsuarioVue',
   components: {
     GridVue
   },
-  props:['id','userid','perfil','nome','data','totalcurtidas','curtiuconteudo','comentarios'],
+  props:['id','userid','perfil','nome','email'],
   data () {
     return {
       curtiu: this.curtiuconteudo ? 'favorite' : 'favorite_border',

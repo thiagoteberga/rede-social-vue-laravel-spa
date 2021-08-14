@@ -1,6 +1,8 @@
 # Rede Social com Vue JS e API Laravel
 
-> Plataforma criada durante o curso.
+##  Plataforma criada durante o curso.
+Veja o projeto finalizado [clicando aqui](https://marinasilva.adv.br/rede_social/).
+
 
 ## Curso de SPA com Vue JS e API Laravel
 - [x] Veja o curso [clicando aqui](https://www.udemy.com/course/spa-com-vue-js/).
@@ -40,13 +42,9 @@ https://www.npmjs.com/package/slug
 
 # Comandos para a Build de Produção:
 
-
 ``` bash
 # install dependencies
 npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
 
 # build for production with minification
 npm run build
@@ -115,7 +113,7 @@ php artisan make:controller Usuario/UsuarioController
 php artisan make:controller Conteudo/ConteudoController
 ```
 
-## Adicionar um Controller
+## Configurar o Cors (Apenas se apresentar o erro de Cors)
 ``` bash
 # Instalar o Cors
 #Access to XMLHttpRequest at 'http://localhost:8000/api/login' from origin 'http://localhost:8080' has been blocked by CORS policy.
@@ -179,10 +177,73 @@ php artisan migrate:fresh
 
 php artisan migrate:rollback
 php artisan migrate:status
+```
 
 
+``` bash
 #Utilizando o Tinker para Gerenciar os Dados no Laravel
 php artisan tinker
 App\Models\User::all();
 $listaConteudos = App\Models\Conteudo::all();
 App\Models\Conteudo::find(17)->delete();
+```
+
+
+``` bash
+# Configurando o Ambiente Compartilhado de Hospedagem para Aceitar o Laravel (PASTA RAIZ DO LARAVEL):
+https://www.youtube.com/watch?v=fkwhtu0H5EU
+
+ wget https://getcomposer.org/installer
+ ls -la
+ php installer
+ rm -rf installer
+ composer create-project laravel/laravel laravel-rede-social
+
+ mv public_html public_html_bkp
+ ln -s laravel-rede-social/public public_html
+ cd laravel-rede-social
+ find * -type d -exec chmod 755 {} \;
+ find * -type f -exec chmod 644 {} \;
+ cd ..
+ chmod 755 laravel-rede-social
+```
+
+
+``` bash
+# Configurando o Ambiente Compartilhado de Hospedagem para Aceitar o Laravel (PASTA RAIZ DO VUE e Outra do Laravel):
+
+## Como Configurar o Linux para a versão correta do PHP:
+https://suporte.hostgator.com.br/hc/pt-br/articles/360006664913-Como-alterar-a-vers%C3%A3o-do-PHP#.htaccess
+
+## Dicas de Configuração
+https://pt.stackoverflow.com/questions/91795/lista-de-diret%c3%b3rios-do-projeto-em-laravel-%c3%a9-exibida-ao-inv%c3%a9s-de-executar-a-aplic/91799#91799
+
+ wget https://getcomposer.org/installer
+ ls -la
+ php installer
+ rm -rf installer
+ composer create-project laravel/laravel laravel-rede-social
+
+## Criar atalho para a pasta do Laravel
+ln -s rede_social/webservice/public backend
+
+## Instalar a parte de Banco do Laravel
+composer require laravel/passport
+php artisan passport:install
+
+composer require laravel/ui:3.x
+
+
+# Erro de API_TOKEN:
+/public_html/rede_social/webservice/config/auth.php
+php artisan ui vue --auth
+
+No campo API alterar o 'driver' => 'passport'
+webservice/config/auth.php
+```
+
+``` bash
+## Traducao erros Portugues
+https://github.com/lucascudo/laravel-pt-BR-localization
+/public_html/rede_social/webservice/resources/lang
+```

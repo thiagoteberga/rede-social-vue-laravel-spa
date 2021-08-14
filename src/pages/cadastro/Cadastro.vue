@@ -2,7 +2,7 @@
   <span>
     <login-template>
       <span slot="menuesquerdo">
-        <img src="http://solucoes.prodesp.sp.gov.br/wp-content/uploads/2020/08/LOGIN-SP-1024x797.png" alt="Imagem de Login" class="responsive-img">
+        <img src="https://marinasilva.adv.br/backend/login-bg.png" alt="Imagem de Login" class="responsive-img">
       </span> 
 
       <span slot="principal">
@@ -46,7 +46,7 @@ export default {
           if(response.data.status){
               console.log('Cadastro realizado com Sucesso');
               this.$store.commit('setUsuario',response.data.usuario);
-              sessionStorage.setItem('belvedereUsuario',JSON.stringify(response.data.usuario));
+              localStorage.setItem('usuarioLogadoSessao',JSON.stringify(response.data.usuario));
               this.$router.push('/');
           }else if(response.data.status == false && response.data.validacao == true){
               console.log('Erro de Validacao');

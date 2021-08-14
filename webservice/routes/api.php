@@ -15,15 +15,18 @@ use App\Models\Comentario;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-| http://127.0.0.1:8000/teste
+| http://127.0.0.1:8000/api/teste
 */
 
 Route::get('/teste',function (Request $request) {
     //return "Ok!";
     
     $user = User::find(1);
-    $user2 = User::find(2);
-    $user3 = User::find(3);
+    $amigos = $user->amigos()->pluck('id'); //seleciona apenas uma coluna do banco
+    $amigos->push($user->id); //sistema de colecoes - insere o ID do usuario logado no Array
+    //dd($amigos);
+    $conteudos = Conteudo::whereIn('user_id',$amigos)->with('user')->orderBy('data','DESC')->get();
+    dd($conteudos);
 
     //dd(Conteudo::all()); //Lista todos os conteudos
 
@@ -99,12 +102,20 @@ Route::get('/teste',function (Request $request) {
 Route::post('/cadastro','App\Http\Controllers\Usuario\UsuarioController@cadastro');
 Route::post('/login','App\Http\Controllers\Usuario\UsuarioController@login');
 Route::middleware('auth:api')->get('/usuario','App\Http\Controllers\Usuario\UsuarioController@usuario');
+Route::middleware('auth:api')->get('/usuario/lista','App\Http\Controllers\Usuario\UsuarioController@lista');
 Route::middleware('auth:api')->put('/perfil','App\Http\Controllers\Usuario\UsuarioController@perfil');
 Route::middleware('auth:api')->post('/conteudo/adicionar','App\Http\Controllers\Conteudo\ConteudoController@adicionar');
 Route::middleware('auth:api')->get('/conteudo/lista','App\Http\Controllers\Conteudo\ConteudoController@lista');
+
 Route::middleware('auth:api')->put('/conteudo/curtir/{id}','App\Http\Controllers\Conteudo\ConteudoController@curtir');
 Route::middleware('auth:api')->put('/conteudo/comentar/{id}','App\Http\Controllers\Conteudo\ConteudoController@comentar');
+
+Route::middleware('auth:api')->put('/conteudo/pagina/curtir/{id}','App\Http\Controllers\Conteudo\ConteudoController@curtirpagina');
+Route::middleware('auth:api')->put('/conteudo/pagina/comentar/{id}','App\Http\Controllers\Conteudo\ConteudoController@comentarpagina');
 
 Route::middleware('auth:api')->get('/conteudo/pagina/lista/{id}','App\Http\Controllers\Conteudo\ConteudoController@pagina');
 
 Route::middleware('auth:api')->post('/usuario/seguir','App\Http\Controllers\Usuario\UsuarioController@seguir');
+
+Route::middleware('auth:api')->get('/usuario/meusseguidores','App\Http\Controllers\Usuario\UsuarioController@meusseguidores');
+Route::middleware('auth:api')->get('/usuario/seguidores/{id}','App\Http\Controllers\Usuario\UsuarioController@seguidores');

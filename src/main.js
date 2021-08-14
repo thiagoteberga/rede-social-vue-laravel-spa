@@ -6,6 +6,8 @@ import router from './router'
 import axios from "axios";
 import Vuex from 'vuex'
 import slug from 'slug'
+import 'materialize-css/dist/css/materialize.min.css'
+import 'materialize-css/dist/js/materialize.min.js'
 
 //Opcao de SLUG sem Biblioteca Externação
 /*
@@ -18,15 +20,16 @@ let slug2 = function(string){
 Vue.use(Vuex)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-Vue.prototype.$urlAPI = 'http://127.0.0.1:8000/api/'
+//Vue.prototype.$urlAPI = 'http://127.0.0.1:8000/api/'
+Vue.prototype.$urlAPI = 'https://marinasilva.adv.br/backend/api/'
 Vue.prototype.$slug = slug
 
 
 var store = {
   state:{
-    usuario: sessionStorage.getItem('belvedereUsuario') ? JSON.parse(sessionStorage.getItem('belvedereUsuario')) : null,
+    usuario: localStorage.getItem('usuarioLogadoSessao') ? JSON.parse(localStorage.getItem('usuarioLogadoSessao')) : null,
     conteudosLinhaTempo: [],
-
+    usuariosCadastrados: [],
   },
   getters:{
     getUsuario: state =>{
@@ -38,6 +41,9 @@ var store = {
     getConteudosLinhaTempo: state =>{
       return state.conteudosLinhaTempo;
     },
+    getUsuariosCadastrados: state =>{
+      return state.usuariosCadastrados;
+    },
   },
   mutations:{
     setUsuario(state,n){
@@ -45,6 +51,9 @@ var store = {
     },
     setConteudosLinhaTempo(state,n){
       state.conteudosLinhaTempo = n;
+    },
+    setUsuariosCadastrados(state,n){
+      state.usuariosCadastrados = n;
     },
     //Aula 80
     setPaginacaoConteudosLinhaTempo(state,lista){

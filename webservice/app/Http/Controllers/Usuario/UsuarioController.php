@@ -67,6 +67,16 @@ class UsuarioController extends Controller
         return $request->user();
     }
 
+    public function lista(Request $request){
+        $users = $request->user()->all();
+
+        if($users){
+            return ['status'=>true, 'validacao'=>false, 'usuarios'=> $users ];
+        }else{
+            return ['status'=>false,'validacao'=>true,'erros'=> 'Nenhum usuário cadastrado!'];
+        }
+    }
+
     public function perfil(Request $request){
         $user = $request->user();
         $data = $request->all();
@@ -179,10 +189,31 @@ class UsuarioController extends Controller
     public function seguir(Request $request){
         $user = $request->user();
         $amigo = User::find($request->id);
-        if($amigo){
+
+        if($amigo && ($user->id != $amigo->id)){
             $user -> amigos() -> toggle($amigo->id);
-            return ['status'=>true, 'validacao'=>false, 'amigos'=> $user -> amigos];
+            return ['status'=>true, 'validacao'=>false, 'amigos'=> $user -> amigos, 'seguidores'=> $user -> seguidores];
         }else{
+            return ['status'=>false,'validacao'=>true,'erros'=> 'Usuário inexistente!'];
+        }
+    }
+
+    public function meusseguidores(Request $request){
+        $user = $request->user();
+        if($user){
+            return ['status'=>true, 'validacao'=>false, 'amigos'=> $user -> amigos, 'seguidores'=> $user -> seguidores];
+        } else {
+            return ['status'=>false,'validacao'=>true,'erros'=> 'Usuário inexistente!'];
+        }
+
+    }
+
+    public function seguidores($id, Request $request){
+        $user = User::find($request->id);
+        $userLogado = $request->user();
+        if($user){
+            return ['status'=>true, 'validacao'=>false, 'amigos'=> $user->amigos, 'amigoslogado'=>$userLogado->amigos, 'seguidores'=> $user -> seguidores];
+        } else {
             return ['status'=>false,'validacao'=>true,'erros'=> 'Usuário inexistente!'];
         }
     }
