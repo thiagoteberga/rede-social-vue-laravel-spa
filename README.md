@@ -3,6 +3,16 @@
 ##  Plataforma criada durante o curso.
 Veja o projeto finalizado [clicando aqui](https://marinasilva.adv.br/rede_social/).
 
+#  Prints do Projeto:
+
+## Login:
+![alt text](https://raw.githubusercontent.com/thiagoteberga/vue-laravel-spa-course/main/webservice/public/prints/print-1.jpg)
+
+## Home:
+![alt text](https://raw.githubusercontent.com/thiagoteberga/vue-laravel-spa-course/main/webservice/public/prints/print-2.jpg)
+
+## Alterar Perfil:
+![alt text](https://raw.githubusercontent.com/thiagoteberga/vue-laravel-spa-course/main/webservice/public/prints/print-3.jpg)
 
 ## Curso de SPA com Vue JS e API Laravel
 - [x] Veja o curso [clicando aqui](https://www.udemy.com/course/spa-com-vue-js/).
@@ -247,3 +257,6 @@ webservice/config/auth.php
 https://github.com/lucascudo/laravel-pt-BR-localization
 /public_html/rede_social/webservice/resources/lang
 ```
+
+
+
